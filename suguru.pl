@@ -81,8 +81,30 @@ getVizinhos(coord(I,J), V) :-
         V
     ).
 
+getCFromMatriz(M, R, C) :-
+	getP(C, M, P),
+    getR(P, G),
+	findall(
+        C1,
+        (
+            nth0(0, M, L),
+            length(M, MI1), length(L, MJ1),
+            MI is MI1 - 1, MJ is MJ1 - 1,
+            between(0, MI, I), between(0, MJ, J),
+            criarCoord(I, J, C1), getP(C1, M, P1), getR(P1, G1), G1 == G
+            ),
+        R
+    ).        
+
+
+getRFromMatriz(M, R) :-
+    maplist(getRFromLista, M, R).
+
 getRFromLista(L, R) :-
 	maplist(getR, L, R).
+
+getVizFromMatriz(M, MViz) :-
+    maplist(getVizFromLista, M, MViz).
 
 getVizFromLista(L, LViz) :-
     maplist(getVizFromListaAux, L, LViz).
