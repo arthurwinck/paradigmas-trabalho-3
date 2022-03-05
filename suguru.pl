@@ -208,6 +208,36 @@ imprimeMatriz([H|T]) :-
 
 
 
+getVFromMatriz(M, R) :-
+    maplist(getVFromLista, M, R).
+
+getVFromLista(L, R) :-
+	maplist(getV, L, R).
+
+getRFromMatriz(M, R) :-
+    maplist(getRFromLista, M, R).
+
+getRFromLista(L, R) :-
+	maplist(getR, L, R).
+
+getVizFromMatriz(M, Mviz) :-
+    maplist(getVizFromLista, M, Mviz).
+
+getVizFromLista(L, LViz) :-
+    maplist(getVizFromListaAux, L, LViz).
+
+getVizFromListaAux(coord(I,J), V) :-
+    criarCoord(I,J,CN),
+    findall(
+        C,
+        (   IH is I + 1, IL is I - 1,
+            JH is J + 1, JL is I - 1,
+            between(IL, IH, I1), between(JL, JH, J1),
+            criarCoord(I1, J1, C), C \== CN
+        ),
+        V
+    ).
+
 oldsuguru(matriz) :-
     matriz(M),
     getVFromMatriz(M, V),
@@ -215,22 +245,6 @@ oldsuguru(matriz) :-
     
 populaMatriz(M) :-
     append(M, Vs), Vs ins 1..6.
-
-sudoku(Rows) :-
-        length(Rows, 9), maplist(same_length(Rows), Rows),
-        append(Rows, Vs), Vs ins 1..9,
-        maplist(all_distinct, Rows),
-        transpose(Rows, Columns),
-        maplist(all_distinct, Columns),
-        Rows = [As,Bs,Cs,Ds,Es,Fs,Gs,Hs,Is],
-        blocks(As, Bs, Cs),
-        blocks(Ds, Es, Fs),
-        blocks(Gs, Hs, Is).
-
-blocks([], [], []).
-blocks([N1,N2,N3|Ns1], [N4,N5,N6|Ns2], [N7,N8,N9|Ns3]) :-
-    all_distinct([N1,N2,N3,N4,N5,N6,N7,N8,N9]),
-    blocks(Ns1, Ns2, Ns3).
 
 suguruTeste(C, M, [H|_], ML) :-
     getP(C, M, P1),
