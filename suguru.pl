@@ -4,7 +4,7 @@ matriz(
 [
     [ponto(4,0),ponto(0,0),ponto(0,1),ponto(0,2),ponto(0,2),ponto(0,2)],
     [ponto(0,0),ponto(0,1),ponto(0,1),ponto(0,1),ponto(0,2),ponto(0,5)],
-    [ponto(0,4),ponto(0,3),ponto(4,1),ponto(0,4),ponto(0,2),ponto(1,5)],
+    [ponto(0,0),ponto(0,3),ponto(4,1),ponto(0,4),ponto(0,2),ponto(1,5)],
     [ponto(0,3),ponto(0,3),ponto(0,4),ponto(2,4),ponto(0,4),ponto(0,5)],
     [ponto(5,3),ponto(0,6),ponto(0,6),ponto(3,4),ponto(5,7),ponto(0,5)],
     [ponto(0,3),ponto(0,7),ponto(0,7),ponto(0,7),ponto(0,7),ponto(0,5)]
@@ -120,7 +120,7 @@ verifica(C, N, M) :-
     verificaVizinhos(C, N, M),
     !.
 
-% Retorna a primeira coordenada C que está vazia (ponto(0,X).
+% Retorna a primeira coordenada C que está vazia (ponto(0,X)).
 verificaVazio(M, C) :-
     (
         nth0(0, M, L),
@@ -137,7 +137,8 @@ verificaVazio(M, C) :-
     );
     criarCoord(-1, -1, C).
 
-% Usando a função auxiliar verificar e a função findall, retorna uma lista de todos 
+% Usando a função auxiliar verificar e a função findall, retorna uma lista de todos os possíveis
+% valores para a coordenada C da matriz M
 verificaPossiveis(C, M, S) :-
     getRegiaoFromMatriz(C, M, R),
     length(R, Max),
@@ -150,10 +151,17 @@ verificaPossiveis(C, M, S) :-
         S
     ).
 
+% Copia uma lista L
+copiar(L, R) :- copiarAux(L,R).
+
+% Auxiliar da função copiar
+copiarAux([],R).
+copiarAux([H|T], R) :- copiarAux(T,H).
+
 % resolve o puzzle
-suguru(coord(I,J), M, _, M) :-
-    length(M, L), I >= L, J >= L, !.
-suguru(coord(-1, -1), M, _, M) :- imprimeMatriz(M).
+%suguru(coord(I,J), M, _, M) :-
+%    length(M, L), ((I >= L); (I < 0)), ((J >= L); (J < 0)), !.
+suguru(coord(-1, -1), M, _, M) :- imprimeMatriz(M), !.
 suguru(_, _, [], []).
 suguru(C, M, [H|T], Rs) :-
     getP(C, M, P1),
@@ -168,9 +176,9 @@ suguru(C, M, [H|T], Rs) :-
         suguru(C, M, T, _)
     );
     (
-        length(R2, T),
-        T \== 0,
-        Rs is R2
+        length(R2, Q),
+        Q \== 0,
+        copiar(R2, Rs)
     ).
 
 % entrada para solve
@@ -197,6 +205,8 @@ imprimeMatriz([H|T]) :-
     imprimeLinha(H),
     imprimeMatriz(T),
     !.
+
+
 
 oldsuguru(matriz) :-
     matriz(M),
